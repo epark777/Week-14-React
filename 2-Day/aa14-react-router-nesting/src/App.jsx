@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider, NavLink, Outlet } from 'react-rout
 import Home from './components/Home';
 import Stocks from './components/Stocks';
 import Movies from './components/Movies';
+import {movies} from './data/movieData';
 
 function Layout() {
   return (
