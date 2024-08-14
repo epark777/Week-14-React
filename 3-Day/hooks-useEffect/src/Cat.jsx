@@ -1,16 +1,51 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import COLORS from './data/colors.json';
 import VALID_STATUS_CODES from './data/validStatusCodes.json';
 
+const max = COLORS.length - 1;
+
 const Cat = () => {
   const navigate = useNavigate();
   const [colorIdx, setColorIdx] = useState(0);
   const [delayChange, setDelayChange] = useState(5000);
-  const [statusChange, setStatusChange] = useState('418');
+  const [statusChange, setStatusChange] = useState(
+          localStorage.getItem('statusCode') || '418'); // Phase 2
   const [delay, setDelay] = useState('');
   const [status, setStatus] = useState('');
+
+  // Phase 1
+  useEffect(() => {
+    const colorInterval = setInterval(() => {
+      setColorIdx((prevColorIdx) => {
+        
+
+        if (prevColorIdx < max) {
+          prevColorIdx++;
+        } else {
+          prevColorIdx = 0;
+        }
+
+        return prevColorIdx;
+      })
+    }, delayChange)
+
+    return () => clearInterval(colorInterval)
+  }, [delayChange])
+
+  // Phase 2
+  useEffect(() => {
+    localStorage.setItem('statusCode', statusChange)
+  }, [statusChange])
+
+  // Bonus
+  useEffect(() => {
+    const statusTimeout = setTimeout(() => {
+      
+    }, 10000)
+
+  }, [statusChange])
 
 
   const handleDelaySubmit = (e) => {
