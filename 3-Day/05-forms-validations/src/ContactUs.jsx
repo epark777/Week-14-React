@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function ContactUs() {
   const [name, setName] = useState('');
@@ -6,10 +6,46 @@ function ContactUs() {
   const [phone, setPhone] = useState('');
   const [phoneType, setPhoneType] = useState('');
   const [comments, setComments] = useState('');
+  const [validationErrors, setValidationErrors] = useState({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  useEffect(() => {
+    const errors = {};
+
+    if (name.length <= 0) {
+      errors.name = 'Please enter you name.';
+    }
+
+    if(!email.includes('@')) {
+      errors.email = 'Please provide a valid email.';
+    }
+
+    setValidationErrors(errors)
+
+  }, [name, email])
+
+  useEffect(() => {
+    console.log(validationErrors)
+  }, [validationErrors])
 
   const onSubmit = e => {
     // Prevent the default form behavior so the page doesn't reload.
     e.preventDefault();
+
+    setHasSubmitted(true);
+
+    // RENDER validation errors option 1:
+    // if (Object.values(validationErrors).length) 
+    //   return alert(`The following errors were found:
+    //     ${validationErrors.name ? "* " + validationErrors.name : ""}
+    //     ${validationErrors.email ? "* " + validationErrors.email : ""}`);
+
+    // RENDER validation errors option 2 (instructor)
+    const myErrors = Object.values(validationErrors);
+    if(myErrors.length) {
+      alert(`The following errors were found: \n${myErrors.join('\n')}`);
+      return;
+    }
 
     // Create a new object for the contact information.
     const contactUsInformation = {
@@ -23,7 +59,7 @@ function ContactUs() {
 
     // Ideally, you'd persist this information to a database using a RESTful API.
     // For now, though, just log the contact information to the console.
-    console.log(contactUsInformation);
+    console.log(contactUsInformation); //! Submission point
 
     // Reset the form state.
     setName('');
@@ -31,6 +67,8 @@ function ContactUs() {
     setPhone('');
     setPhoneType('');
     setComments('');
+    setValidationErrors({});
+    setHasSubmitted(false);
   }
 
   return (
@@ -45,6 +83,9 @@ function ContactUs() {
             onChange={e => setName(e.target.value)}
             value={name}
           />
+          <div className='error'>
+            {hasSubmitted && validationErrors.name && `* ${validationErrors.name}`}
+          </div>
         </div>
         <div>
           <label htmlFor='email'>Email:</label>
@@ -54,6 +95,9 @@ function ContactUs() {
             onChange={e => setEmail(e.target.value)}
             value={email}
           />
+          <div className='error'>
+            {hasSubmitted && validationErrors.email && `* ${validationErrors.email}`}
+          </div>
         </div>
         <div>
           <label htmlFor='phone'>Phone:</label>
