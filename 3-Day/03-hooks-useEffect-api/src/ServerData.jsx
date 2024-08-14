@@ -8,7 +8,7 @@ const ServerData = () => {
       const res = await fetch('https://fortnite-api.com/v2/news');
       const { data } = await res.json();
 
-      setServerData(data.br.motds[3]);
+      setServerData(data.br.motds);
     };
 
     const fetchTimeout = setTimeout(() => fetchFortnite(), 2000);
